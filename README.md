@@ -10,9 +10,9 @@
 
 [Website](https://subsquid.io) | [Docs](https://docs.subsquid.io/) | [Discord](https://discord.gg/subsquid)
 
-# ENS Subgraph migration 
+# Snapshot Subgraph migration 
 
-This quest is to migrate the [ENS Subgraph](https://docs.ens.domains/contract-api-reference/subgraphdata) to Squid SDK. The repo for the subgraph can be found [here](https://github.com/ensdomains/ens-subgraph). The resulting squid should match the GraphQL API of the subgraph as close as possible, by migrating `schema.graphql`. The judges reserve the right to request improvements afther the initial review of the submission. Reach out to the [TG Channel](#) for any tech questions regarding this quest. 
+This quest is to migrate the [Snapshot Subgraph]([https://docs.ens.domains/contract-api-reference/subgraphdata](https://github.com/snapshot-labs/snapshot-subgraph)) to Squid SDK. The resulting squid should match the GraphQL API of the subgraph as close as possible, by migrating `schema.graphql`. The judges reserve the right to request improvements afther the initial review of the submission. Reach out to the [TG Channel](#) for any tech questions regarding this quest. 
 
 # Quest Info
 
