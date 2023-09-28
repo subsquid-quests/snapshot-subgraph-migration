@@ -35,5 +35,5 @@ The code should be well documented. The judges will access:
 
 # Useful links
 
-- [https://docs.subsquid.io/deploy-squid/quickstart/](Quickstart)
+- [Quickstart](https://docs.subsquid.io/deploy-squid/quickstart/)
 - [TheGraph Migration guide](https://docs.subsquid.io/migrate/migrate-subgraph/)
