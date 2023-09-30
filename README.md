@@ -18,7 +18,7 @@ This quest is to migrate the [Snapshot Subgraph]([https://docs.ens.domains/contr
 
 | Category         | Skill Level                          | Time required (hours) | Max Participants | Reward                             | Status |
 | ---------------- | ------------------------------------ | --------------------- | ---------------- | ---------------------------------- | ------ |
-| Squid Deployment | $\textcolor{green}{\textsf{Intermediate}}$ | ~40                    | 5                | $\textcolor{red}{\textsf{2000tSQD}}$ | open   |
+| Squid Deployment | $\textcolor{green}{\textsf{Intermediate}}$ | ~40                    | 5                | $\textcolor{red}{\textsf{2001tSQD}}$ | open   |
 
 # Acceptance critera
 
