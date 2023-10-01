@@ -1,0 +1,20 @@
+type Delegation @entity {
+  id: ID!
+  delegator: Bytes!
+  space: String!
+  delegate: Bytes!
+  timestamp: BigInt!
+}
+
+type Block @entity {
+  id: ID!
+  number: BigInt!
+  timestamp: BigInt!
+}
+
+type Sig @entity {
+  id: ID!
+  account: Bytes!
+  msgHash: String!
+  timestamp: BigInt!
+}
