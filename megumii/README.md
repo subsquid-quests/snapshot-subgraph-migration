@@ -57,3 +57,5 @@ sqd serve
 ```
 
 then open on your browser: http://localhost:4350/graphql
+
+Or try it: https://squid.subsquid.io/megumii/v/v1/graphql
