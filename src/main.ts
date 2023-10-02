@@ -114,8 +114,7 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
           if (result !== undefined) {
             if (log.topics[0] === DelegateRegistry.events.ClearDelegate.topic) {
               // Handle ClearDelegate event
-              let id = result.id;
-              clearDelegations.push(id); // Add ID to list of delegations to clear
+              clearDelegations.push(result.id); // Add ID to list of delegations to clear
             } else {
               // Handle SetDelegate event
               let delegation = new Delegation({
