@@ -1,5 +1,5 @@
 import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { Delegation, Sig } from "./model";
+import { Delegation, Sig, Block } from "./model";
 import { CONTRACT_ADDRESS_DELEGATE, processor } from "./processor";
 import { decodeHex } from "@subsquid/evm-processor";
 import * as DelegateRegistry from "./abi/DelegateRegistry";
@@ -14,6 +14,8 @@ function getDataFromLogs(log: any) {
         DelegateRegistry.events.SetDelegate.decode(log);
       return {
         type: "SetDelegate",
+        blockNumber: log.blockNumber,
+        block: log.block,
         id: `${delegator}-${id}-${delegate}`,
         delegate: decodeHex(delegate),
         delegator: decodeHex(delegator),
@@ -27,6 +29,7 @@ function getDataFromLogs(log: any) {
       return {
         type: "ClearDelegate",
         id: `${delegator}-${id}-${delegate}`,
+        blockNumber: log.blockNumber,
         delegate: decodeHex(delegate),
         delegator: decodeHex(delegator),
         space: id,
@@ -35,9 +38,12 @@ function getDataFromLogs(log: any) {
     },
     [GnosisSafe.events.SignMsg.topic]: () => {
       const { msgHash } = GnosisSafe.events.SignMsg.decode(log);
+
       return {
         type: "SignMsg",
         id: log.transaction?.hash,
+        blockNumber: log.blockNumber,
+        block: log.block,
         msgHash,
         delegator: decodeHex(log.address),
         timestamp: BigInt(log.block.timestamp / 1000), // Convert timestamp to seconds
@@ -56,6 +62,21 @@ function getDataFromLogs(log: any) {
   }
 
   return undefined; // Return undefined if no matching event is found
+}
+
+async function addBlockToDatabase(ctx: any, block: any) {
+  try {
+    console.log("block header", block);
+    await ctx.store.insert(
+      new Block({
+        id: block.hash, // Use block hash as the ID
+        number: BigInt(block.height),
+        timestamp: BigInt(block.timestamp / 1000), // converted to seconds
+      })
+    );
+  } catch (err) {
+    console.error("Error adding block to the database:", err);
+  }
 }
 
 // Main processing logic
@@ -128,6 +149,8 @@ processor.run(
                 delegate: Buffer;
                 delegator: Buffer;
                 space: string;
+                blockNumber: number;
+                block: any;
                 timestamp: number;
               };
 
@@ -142,6 +165,8 @@ processor.run(
                   timestamp: setDelegateResult.timestamp,
                 })
               );
+
+              await addBlockToDatabase(ctx, setDelegateResult.block);
             }
           } else {
             // Process as Sig
@@ -150,6 +175,8 @@ processor.run(
               id: any;
               msgHash: string;
               delegator: Buffer;
+              blockNumber: number;
+              block: any;
               timestamp: bigint;
             };
 
@@ -162,6 +189,8 @@ processor.run(
                 timestamp: signMsgResult.timestamp,
               })
             );
+
+            await addBlockToDatabase(ctx, signMsgResult.block);
           }
         }
       } catch (err) {
