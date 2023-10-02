@@ -16,10 +16,10 @@ Dependencies: Node.js, Docker.
 npm i -g @subsquid/cli
 
 # 1. Clone repository
-git clone https://github.com/0xNomind/snapshot-squid.git
+git clone https://github.com/0xNomind/snapshot-subgraph-migration.git
 
 # 2. Go to folder
-cd snapshot-squid
+cd snapshot-squid-0xNomind
 
 # 3. Rename .env.example to .env
 
