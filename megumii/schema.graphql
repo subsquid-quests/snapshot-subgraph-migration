@@ -3,33 +3,18 @@ type Delegation @entity {
   delegator: String!
   space: String!
   delegate: String!
-  timestamp: Int!
+  timestamp: DateTime!
 }
 
 type Block @entity {
   id: ID!
   number: BigInt!
-  timestamp: BigInt!
+  timestamp: DateTime!
 }
 
 type Sig @entity {
   id: ID!
-  owner: String!
-  approvedHash: String!
-  handler: String!
-  guard: String!
-  threshold: BigInt!
-  initiator: String!
-  payment: BigInt!
-  sender: String!
-  owners: [String]!
-  proxy: String!
-  value: BigInt!
-  initializer: String!
-  fallbackHandler: String!
-  txHash: String!
-  module: String!
-  account: Bytes!
+  account: String!
   msgHash: String!
-  timestamp: BigInt!
+  timestamp: DateTime!
 }

@@ -44,6 +44,10 @@ export const processor = new EvmBatchProcessor()
         topic0: [Delegation.events.SetDelegate.topic, Delegation.events.ClearDelegate.topic],
     })
     .addLog({
+        address: ["0x12302fE9c02ff50939BaAaaf415fc226C078613C", "0x76E2cFc1F5Fa8F6a5b3fC4c8F4788F0116861F9B", "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2"],
+        topic0: [Sig.events.SignMsg.topic],
+    })
+    .addLog({
         address: ['0x12302fE9c02ff50939BaAaaf415fc226C078613C'],
         topic0: [SigProxy100.events.ProxyCreation.topic],
     })

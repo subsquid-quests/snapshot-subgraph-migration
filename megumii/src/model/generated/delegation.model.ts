@@ -18,6 +18,6 @@ export class Delegation {
     @Column_("text", {nullable: false})
     delegate!: string
 
-    @Column_("int4", {nullable: false})
-    timestamp!: number
+    @Column_("timestamp with time zone", {nullable: false})
+    timestamp!: Date
 }
