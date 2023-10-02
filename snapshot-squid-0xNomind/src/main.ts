@@ -1,5 +1,5 @@
-import { Store, TypeormDatabase } from "@subsquid/typeorm-store";
-import { Block, Delegation, Sig } from "./model";
+import { TypeormDatabase } from "@subsquid/typeorm-store";
+import { Block as BlockEntity, Delegation, Sig } from "./model";
 import {
   processor,
   CONTRACT_ADDRESS_DELEGATE,
@@ -14,12 +14,12 @@ import { decodeHex } from "@subsquid/evm-processor";
 processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   let delegations: Map<string, Delegation> = new Map();
   let clearDelegations: string[] = [];
-  let blocks: Block[] = [];
+  let blocks: BlockEntity[] = [];
   let sigs: Sig[] = [];
 
   for (let block of ctx.blocks) {
     blocks.push(
-      new Block({
+      new BlockEntity({
         id: block.header.hash,
         number: BigInt(block.header.height),
         timestamp: BigInt(block.header.timestamp),
