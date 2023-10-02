@@ -88,9 +88,6 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   // Iterate through blocks and logs
   for (let c of ctx.blocks) {
     for (let log of c.logs) {
-      console.log(log.topics[0]);
-      console.log("gnosis", GnosisSafe.events.SignMsg.topic);
-      console.log("delegations", DelegateRegistry.events.SetDelegate.topic);
       if (log.topics[0] == GnosisSafe.events.SignMsg.topic) {
         let result = getDataFromLogs(log);
 
@@ -110,7 +107,6 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
         }
       }
       if (log.address === CONTRACT_ADDRESS_DELEGATE) {
-        console.log("I ran");
         try {
           // Get data from logs
           let result = getDataFromLogs(log);
