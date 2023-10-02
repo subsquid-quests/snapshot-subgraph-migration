@@ -1,0 +1,35 @@
+type Delegation @entity {
+  id: ID!
+  delegator: String!
+  space: String!
+  delegate: String!
+  timestamp: Int!
+}
+
+type Block @entity {
+  id: ID!
+  number: BigInt!
+  timestamp: BigInt!
+}
+
+type Sig @entity {
+  id: ID!
+  owner: String!
+  approvedHash: String!
+  handler: String!
+  guard: String!
+  threshold: BigInt!
+  initiator: String!
+  payment: BigInt!
+  sender: String!
+  owners: [String]!
+  proxy: String!
+  value: BigInt!
+  initializer: String!
+  fallbackHandler: String!
+  txHash: String!
+  module: String!
+  account: Bytes!
+  msgHash: String!
+  timestamp: BigInt!
+}
