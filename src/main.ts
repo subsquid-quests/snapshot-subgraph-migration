@@ -141,7 +141,7 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
 
   // Remove delegations if ClearDelegate events were detected
   if (clearDelegations.length !== 0) {
-    await ctx.store.remove(Delegation, clearDelegations);
+    await ctx.store.remove(Delegation, [...clearDelegations]);
   }
 
   // upsert batches of entities with batch-optimized ctx.store.save
