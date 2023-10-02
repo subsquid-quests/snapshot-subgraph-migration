@@ -1,26 +1,45 @@
 import { Store, TypeormDatabase } from "@subsquid/typeorm-store";
 import { Block, Delegation, Sig } from "./model";
-import { processor, CONTRACT_ADDRESS_DELEGATE } from "./processor";
+import {
+  processor,
+  CONTRACT_ADDRESS_DELEGATE,
+  CONTRACT_ADDRESS_GNOSIS_SAFE_V1_0_0,
+  CONTRACT_ADDRESS_GNOSIS_SAFE_V1_1_1,
+  CONTRACT_ADDRESS_GNOSIS_SAFE_V1_3_0,
+} from "./processor";
 import * as DelegateRegistry from "./abi/DelegateRegistry";
 import * as GnosisSafe from "./abi/GnosisSafe";
 import { decodeHex } from "@subsquid/evm-processor";
 
 processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
-  let delegations: Map<string, Delegation>= new Map;
+  let delegations: Map<string, Delegation> = new Map();
   let clearDelegations: string[] = [];
+  let blocks: Block[] = [];
   let sigs: Sig[] = [];
 
   for (let block of ctx.blocks) {
-    await ctx.store.insert(
+    blocks.push(
       new Block({
         id: block.header.hash,
         number: BigInt(block.header.height),
         timestamp: BigInt(block.header.timestamp),
       })
     );
+    ctx.log.info(
+      `Block: [id: ${block.header.hash}, number: ${BigInt(block.header.height)}]`
+    );
+
     for (let log of block.logs) {
       // decode and normalize the tx data
-      if (log.topics[0] == GnosisSafe.events.SignMsg.topic) {
+      if (
+        log.address in
+          [
+            CONTRACT_ADDRESS_GNOSIS_SAFE_V1_0_0,
+            CONTRACT_ADDRESS_GNOSIS_SAFE_V1_1_1,
+            CONTRACT_ADDRESS_GNOSIS_SAFE_V1_3_0,
+          ] &&
+        log.topics[0] == GnosisSafe.events.SignMsg.topic
+      ) {
         let { msgHash } = GnosisSafe.events.SignMsg.decode(log);
         sigs.push(
           new Sig({
@@ -30,7 +49,9 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
             timestamp: BigInt(block.header.timestamp),
           })
         );
-        ctx.log.info(`SignMsg: [id: ${log.id}, account: ${log.address}], msgHash: ${msgHash}`);
+        ctx.log.info(
+          `SignMsg: [id: ${log.id}, account: ${log.address}, msgHash: ${msgHash}]`
+        );
       }
 
       if (log.address == CONTRACT_ADDRESS_DELEGATE) {
@@ -39,7 +60,8 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
             DelegateRegistry.events.SetDelegate.decode(log);
           let space = id;
           id = delegator.concat("-").concat(space).concat("-").concat(delegate);
-          delegations.set(id, 
+          delegations.set(
+            id,
             new Delegation({
               id: id,
               delegator: decodeHex(delegator),
@@ -48,7 +70,9 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
               timestamp: BigInt(block.header.timestamp),
             })
           );
-          ctx.log.info(`SetDelegate: [id: ${id}, delegator: ${delegator}], space: ${space}, delegate: ${delegate}`);
+          ctx.log.info(
+            `SetDelegate: [id: ${id}, delegator: ${delegator}, space: ${space}, delegate: ${delegate}]`
+          );
         }
 
         if (log.topics[0] == DelegateRegistry.events.ClearDelegate.topic) {
@@ -57,12 +81,15 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
           let space = id;
           id = delegator.concat("-").concat(space).concat("-").concat(delegate);
           clearDelegations.push(id);
-          ctx.log.info(`ClearDelegate: [id: ${id}, delegator: ${delegator}], space: ${space}, delegate: ${delegate}`);
+          ctx.log.info(
+            `ClearDelegate: [id: ${id}, delegator: ${delegator}, space: ${space}, delegate: ${delegate}]`
+          );
         }
       }
     }
   }
 
+  await ctx.store.upsert(blocks);
   await ctx.store.upsert([...delegations.values()]);
   await ctx.store.upsert(sigs);
   if (clearDelegations.length != 0) {
