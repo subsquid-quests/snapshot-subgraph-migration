@@ -40,6 +40,8 @@ sqd serve
 ## Query Examples:
 
 ### Squid Query
+
+ - Delegations
 ```
 query MyQuery {
   delegations (limit:2){
@@ -52,8 +54,9 @@ query MyQuery {
 }
 ```
 Output:
-<img width="1453" alt="Screenshot 2023-10-01 at 04 14 37" src="https://github.com/davaymne/snapshot-subgraph/assets/29555611/de14f9a5-6a92-4f06-9b0d-c7c649de26a5">
+<img width="1257" alt="Screenshot 2023-10-05 at 00 44 19" src="https://github.com/davaymne/snapshot-subgraph-migration/assets/29555611/7fa470e0-16f4-4e4f-8002-160c7d858686">
 
+ - SigMsg by account
 ```
 query MyQuery {
   sigs(where: {account_contains: "0x00f10f0fd39533bd8567c763b2671cda00da7872"}) {
@@ -65,7 +68,21 @@ query MyQuery {
 }
 ```
 Output:
-<img width="1408" alt="Screenshot 2023-10-04 at 02 03 09" src="https://github.com/davaymne/snapshot-subgraph-migration/assets/29555611/2691ff04-4e1b-4db3-8467-8bd04e221225">
+<img width="1386" alt="Screenshot 2023-10-05 at 00 42 16" src="https://github.com/davaymne/snapshot-subgraph-migration/assets/29555611/fe09de02-e192-4b8a-8b65-a04ca5277005">
+
+
+ - Multiple sigMsg in 1 x tx:
+```
+query MyQuery {
+  sigs (where: {id_contains: "0x1e206ce100e2c9c85dbf6365798e2e6ccbf4e30d9499a00699e86531c6426778"}){
+    id
+    account
+    timestamp
+    msgHash
+  }
+}
+```
+<img width="1392" alt="Screenshot 2023-10-05 at 00 47 32" src="https://github.com/davaymne/snapshot-subgraph-migration/assets/29555611/de5fb254-e510-4579-a377-3cb74cf52724">
 
 
 ### The Graph Query
