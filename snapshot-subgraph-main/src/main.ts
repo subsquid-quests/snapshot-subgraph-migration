@@ -25,12 +25,14 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
         let delegateLog = false
         for (let log of c.logs) {
             // decode and normalize the tx data GnosisSafe
-            if ([PROXYFACTORY100, PROXYFACTORY111, PROXYFACTORY130].includes(log.address.toLowerCase())) {
+            if ([PROXYFACTORY100, PROXYFACTORY111, PROXYFACTORY130].includes(log.address.toLowerCase())
+                && [ProxyFactory100.events.ProxyCreation.topic, ProxyFactory111.events.ProxyCreation.topic, ProxyFactory130.events.ProxyCreation.topic].includes(log.topics[0])) {
                 getGnosisID(ctx, log)
             }
-            if (factoryGnosis.has(log.address.toLowerCase())) {
+            if (factoryGnosis.has(log.address.toLowerCase()) && log.topics[0] === GnosisSafe.events.SignMsg.topic) {
                 sigs.push(getSig(ctx, log, c))
             }
+
             // decode and normalize the tx data SetDelegate
             if(log.topics[0] === DelegateRegistry.events.SetDelegate.topic) {
                 if (log.address.toLowerCase()!=DELEGATEREGISTRY) {
@@ -38,7 +40,7 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
                 }
                 let {delegator, id, delegate} = DelegateRegistry.events.SetDelegate.decode(log);
                 let space = id;
-                id  = delegator.concat('-').concat(id).concat('-').concat(delegate).concat('').concat(c.header.timestamp.toString());
+                id  = delegator.concat('-').concat(space).concat('-').concat(delegate);
                 ctx.log.info(`SetDelegate: block: ${c.header.height}, id: ${id}, delegator: ${delegator}, space: ${space}, delegate: ${delegate}`);
                 delegationsSet.set(id, new Delegation({
                     id: id,
@@ -56,7 +58,7 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
                 }
                 let {delegator, id, delegate} = DelegateRegistry.events.ClearDelegate.decode(log);
                 let space = id;
-                id  = delegator.concat('-').concat(id).concat('-').concat(delegate).concat('').concat(c.header.timestamp.toString());
+                id  = delegator.concat('-').concat(space).concat('-').concat(delegate);
                 ctx.log.info(`ClearDelegate: block: ${c.header.height}, id: ${id}, delegator: ${delegator}, space: ${space}, delegate: ${delegate}`);
                 delegationsClear.push(id);
                 delegateLog = true
@@ -80,12 +82,12 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 function getSig(ctx: Context, log: Log, c: any): Sig {
     let {msgHash} = GnosisSafe.events.SignMsg.decode(log)
     let sig = new Sig({
-        id: log.transaction?.hash.toString(),
+        id: log.transaction?.hash.toString().concat('-').concat(log.id),
         account: log.address,
         msgHash: msgHash,
         timestamp: new Date(c.header.timestamp),
     });
-    ctx.log.info(`SignMsg: block: ${c.header.height}, account: ${sig.account}, msgHash: ${sig.msgHash}, timestamp: ${sig.timestamp}`);
+    ctx.log.info(`SignMsg: block: ${c.header.height}, id: ${sig.id}, account: ${sig.account}, msgHash: ${sig.msgHash}, timestamp: ${sig.timestamp}`);
     return sig
 }
 
@@ -105,3 +107,5 @@ function getGnosisID(ctx: Context, log: Log): string {
     //ctx.log.info(`Add Gnosis ID: block: ${log.block.height}, proxy: ${proxy.toLowerCase()}`)
     return proxy
 }
+
+
