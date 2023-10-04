@@ -54,6 +54,18 @@ query MyQuery {
 Output:
 <img width="1453" alt="Screenshot 2023-10-01 at 04 14 37" src="https://github.com/davaymne/snapshot-subgraph/assets/29555611/de14f9a5-6a92-4f06-9b0d-c7c649de26a5">
 
+```
+query MyQuery {
+  sigs(where: {account_contains: "0x00f10f0fd39533bd8567c763b2671cda00da7872"}) {
+    id
+    account
+    msgHash
+    timestamp
+  }
+}
+```
+Output:
+<img width="1408" alt="Screenshot 2023-10-04 at 02 03 09" src="https://github.com/davaymne/snapshot-subgraph-migration/assets/29555611/2691ff04-4e1b-4db3-8467-8bd04e221225">
 
 
 ### The Graph Query
@@ -70,6 +82,19 @@ Output:
 ```
 Output:
 <img width="1391" alt="Screenshot 2023-10-01 at 04 08 45" src="https://github.com/davaymne/snapshot-subgraph/assets/29555611/6fb73827-718a-494d-b4fb-ad807508e88d">
+
+```
+{
+  sigs (where: {account: "0x00f10f0fd39533bd8567c763b2671cda00da7872"}){
+    id
+    account
+    timestamp
+    msgHash
+  }
+}
+```
+Output:
+<img width="1254" alt="Screenshot 2023-10-04 at 02 04 03" src="https://github.com/davaymne/snapshot-subgraph-migration/assets/29555611/a5b457ca-d37a-4832-b73d-ab1d6505a03f">
 
 
 
