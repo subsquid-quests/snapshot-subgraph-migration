@@ -59,8 +59,13 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
                 let {delegator, id, delegate} = DelegateRegistry.events.ClearDelegate.decode(log);
                 let space = id;
                 id  = delegator.concat('-').concat(space).concat('-').concat(delegate);
-                ctx.log.info(`ClearDelegate: block: ${c.header.height}, id: ${id}, delegator: ${delegator}, space: ${space}, delegate: ${delegate}`);
-                delegationsClear.push(id);
+                if (delegationsSet.has(id)) { 
+                    ctx.log.info(`ClearDelegate: removing Delegation from runtime Set: block: ${c.header.height}, id: ${id}, delegator: ${delegator}, space: ${space}, delegate: ${delegate}`);
+                    delegationsSet.delete(id)
+                } else {
+                    ctx.log.info(`ClearDelegate: block: ${c.header.height}, id: ${id}, delegator: ${delegator}, space: ${space}, delegate: ${delegate}`);
+                    delegationsClear.push(id);
+                }
                 delegateLog = true
             }
         }
@@ -75,8 +80,8 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 
     // upsert batches of entities with batch-optimized ctx.store.save
     await ctx.store.upsert(sigs);
-    await ctx.store.upsert([...delegationsSet.values()]);
     if (delegationsClear.length != 0) {await ctx.store.remove(Delegation, [...delegationsClear]);}
+    await ctx.store.upsert([...delegationsSet.values()]);
 });
 
 function getSig(ctx: Context, log: Log, c: any): Sig {
@@ -107,5 +112,3 @@ function getGnosisID(ctx: Context, log: Log): string {
     //ctx.log.info(`Add Gnosis ID: block: ${log.block.height}, proxy: ${proxy.toLowerCase()}`)
     return proxy
 }
-
-
