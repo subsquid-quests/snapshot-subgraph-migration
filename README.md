@@ -1,125 +1,146 @@
 <p align="center">
-<picture>
-    <source srcset="https://uploads-ssl.webflow.com/63b5a9958fccedcf67d716ac/64662df3a5a568fd99e3600c_Squid_Pose_1_White-transparent-slim%201.png" media="(prefers-color-scheme: dark)">
-    <img src="https://uploads-ssl.webflow.com/63b5a9958fccedcf67d716ac/64662df3a5a568fd99e3600c_Squid_Pose_1_White-transparent-slim%201.png" alt="Subsquid Logo">
-</picture>
+  <picture>
+      <source srcset="https://uploads-ssl.webflow.com/63b5a9958fccedcf67d716ac/64662df3a5a568fd99e3600c_Squid_Pose_1_White-transparent-slim%201.png" media="(prefers-color-scheme: dark)">
+      <img src="https://uploads-ssl.webflow.com/63b5a9958fccedcf67d716ac/64662df3a5a568fd99e3600c_Squid_Pose_1_White-transparent-slim%201.png" alt="Subsquid Logo">
+  </picture>
 </p>
 
-[![docs.rs](https://docs.rs/leptos/badge.svg)](https://docs.subsquid.io/)
-[![Discord](https://img.shields.io/discord/1031524867910148188?color=%237289DA&label=discord)](https://discord.gg/subsquid)
+# Snapshot Squid
 
-[Website](https://subsquid.io) | [Docs](https://docs.subsquid.io/) | [Discord](https://discord.gg/subsquid)
+Snapshot Squid is an implementation of the [Snapshot Subgraph](https://thegraph.com/hosted-service/subgraph/snapshot-labs/snapshot) using the [Squid SDK](https://docs.subsquid.io/), migrating the snapshot subgraph to the squid SDK. It provides a powerful and flexible way to interact with on-chain data and query information from the Ethereum blockchain.
 
-# Snapshot Subgraph migration 
+## Prerequisites
 
-This quest is to migrate the [Snapshot Subgraph](https://thegraph.com/hosted-service/subgraph/snapshot-labs/snapshot) to Squid SDK. The resulting squid should match the GraphQL API of the subgraph as close as possible, by migrating `schema.graphql`. The judges reserve the right to request improvements afther the initial review of the submission. Reach out to the [Discord Channel]( https://discord.com/channels/857105545135390731/1155812879770058783) for any tech questions regarding this quest. 
+Before getting started, ensure you have the following dependencies installed on your machine:
 
-# Quest Info
+- [Node.js](https://nodejs.org/): JavaScript runtime for running JavaScript applications.
+- [Docker](https://www.docker.com/): Used to manage containers for PostgreSQL.
 
-| Category         | Skill Level                          | Time required (hours) | Max Participants | Reward                             | Status |
-| ---------------- | ------------------------------------ | --------------------- | ---------------- | ---------------------------------- | ------ |
-| Squid Deployment | $\textcolor{green}{\textsf{Intermediate}}$ | ~40                    | 5                | $\textcolor{red}{\textsf{2000tSQD}}$ | open   |
+## Quickstart
 
-# Acceptance critera
-
-Each quest should be submitted as a private repo and will be reviewed manually. To submit, create an issue with url to your repo and invite the following github accounts: [@dariaag](https://github.com/dariaag), [@belopash](https://github.com/belopash), [@abernatskiy](https://github.com/abernatskiy) and [@dzhelezov](https://github.com/dzhelezov). The repo should contain `README.MD` with
-
-- Insturctions how to run the squid locally
-- Sample Squid queries and the corresponding Subgraph queries
-
-The code should be well documented. The judges will access:
-
-- In-line commends where necessary
-- Clarity of the code
-- Performance and optimization (if [batching](https://docs.subsquid.io/basics/batch-processing/)  and [Multicall queries](https://docs.subsquid.io/tutorials/bayc/step-four-optimizations/#using-multicall-for-aggregating-state-queries) are used whenever appropriate)
-
-# Useful links
-
-- [Quickstart](https://docs.subsquid.io/deploy-squid/quickstart/)
-- [TheGraph Migration guide](https://docs.subsquid.io/migrate/migrate-subgraph/)
-- [Snapshot Subgraph source code](https://github.com/snapshot-labs/snapshot-subgraph)
-
-# Setup and Common errors
-
-1. Install Node v16.x or newer [https://nodejs.org/en/download](https://nodejs.org/en/download)
-2. Install Docker [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
-3. Install git [https://git-scm.com/book/en/v2/Getting-Started-Installing-Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-4. Install Squid CLI 
-    
-    ```bash
-    npm i -g @subsquid/cli@latest
-    ```
-    
-## How to run a squid:
-
-1. Install dependecies:
+Follow these steps to set up and run Snapshot Squid migration on your local machine:
 
 ```bash
-npm ci
-```
+# 0. Install @subsquid/cli globally (the sqd command)
+npm i -g @subsquid/cli
 
-2. Generate model
+# 1. Clone the repository
+git clone https://github.com/RicqCodes/snapshot-subgraph-migration.git
 
-```bash
-sqd codegen
-```
+# 2. Navigate to the project folder
+cd snapshot-squid
 
-3. Generate types
+# 3. Rename .env.example to .env and configure environment variables
 
-```bash
-sqd typegen
-```
+# 4. Install project dependencies
+npm i
 
-4. Open docker and run:
+# 5. Build the project
+sqd build
 
-```bash
+# 6. Start a PostgreSQL database container and detach
 sqd up
-```
 
-5. Generate migrations:
-
-```bash
+# 7. Run migrations
 sqd migration:generate
-```
 
-6. Start processing:
-
-```bash
+# 8. Start the processor
 sqd process
+
+# 9. The processor command will block the terminal while fetching chain data,
+#    transforming it, and storing it in the target database.
+#    To start the GraphQL server, open a separate terminal and run
+sqd serve
 ```
 
-## Possible Errors:
+A GraphiQL playground will be available at [localhost:4350/graphql](http://localhost:4350/graphql).
 
-1. Docker not installed
+## Query Examples
 
-```bash
-X db Error × query-gateway Error
-Error response from daemon: Get "https://registry-1.docker.jo/v2/": uri ting to 127.0.0.1:8888: dial cp 127.0.0.1:8888: connectex: No connection
+The code includes a query named CombinedData which fetches data for delegations, blocks, and signatures.
+
+
+### Squid Query
+
+```
+query CombinedData {
+  delegations(limit: 5) {
+    id
+    delegator
+    space
+    delegate
+  }
+  blocks(limit: 2) {
+    id
+    number
+    timestamp
+  }
+  sigs(limit: 2) {
+    id
+    account
+    msgHash
+    timestamp
+  }
+}
+
 ```
 
-2. Git not installed
+#### Output
+{
+  "data": {
+    "delegations": [
+      // Delegation data here...
+    ],
+    "blocks": [
+      // Block data here...
+    ],
+    "sigs": [
+      // Signature data here...
+    ]
+  }
+}
 
-```bash
-Error: Error: spawn git ENOENT
-at ChildProcess._handle.onexit (node: internal/child_process: 284:19)
-at onErrorNT (node: internal/child_process:477:16)
-at process.processTicksAndRejections (node: internal/process/task_queues:82:21)
+![Snapshot Subgraph](https://github.com/cleanerzkp/snapshot-subgraph-migration/blob/main/assets/snapshot-subgraph.png)
+
+## Graph Query
+
+```
+query CombinedData {
+  delegations(limit: 5) {
+    id
+    delegator
+    space
+    delegate
+  }
+  blocks(limit: 2) {
+    id
+    number
+    timestamp
+  }
+  sigs(limit: 2) {
+    id
+    account
+    msgHash
+    timestamp
+  }
+}
+
 ```
 
-3. Dependencies not installed. Run `npm ci`
+#### Output
+{
+  "data": {
+    "delegations": [
+      // Delegation data here...
+    ],
+    "blocks": [
+      // Block data here...
+    ],
+    "sigs": [
+      // Signature data here...
+    ]
+  }
+}
 
-```bash
-sqd typegen
-TYPEGEN
-    Error: spawn squid-evm-typegen ENOENT
-    Code: ENOENT
-```
-
-4. Rate-limiting. Change the `rpcUrl` in `processor.ts`
-
-```bash
-will pause new requests for 20000ms {"rpcUrl":"https://rpc.ankr.com/eth", 
-"reason" : "HttpError: got 429 from https://rpc.ankr.com/eth"}
-```
-
+![Snapshot Subgraph](https://github.com/cleanerzkp/snapshot-subgraph-migration/blob/main/assets/snapshot-subgraph.png)
 
