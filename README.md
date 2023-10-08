@@ -12,7 +12,7 @@
 
 # Snapshot Subgraph migration 
 
-**Submissions for this quest are closed***
+**Submissions for this quest are closed**
 
 This quest is to migrate the [Snapshot Subgraph](https://thegraph.com/hosted-service/subgraph/snapshot-labs/snapshot) to Squid SDK. The resulting squid should match the GraphQL API of the subgraph as close as possible, by migrating `schema.graphql`. The judges reserve the right to request improvements afther the initial review of the submission. Reach out to the [Discord Channel]( https://discord.com/channels/857105545135390731/1155812879770058783) for any tech questions regarding this quest. 
 
