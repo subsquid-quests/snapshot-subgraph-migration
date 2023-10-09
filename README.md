@@ -10,6 +10,14 @@
 
 [Website](https://subsquid.io) | [Docs](https://docs.subsquid.io/) | [Discord](https://discord.gg/subsquid)
 
+# Winners
+- [@Showyilu](https://github.com/Showyilu/Snapshot-Squid)
+- [0xNomind](https://github.com/0xNomind/snapshot-squid)
+- [davaymne](https://github.com/davaymne/snapshot-subgraph-migration)
+- [script-money](https://github.com/script-money/snapshot-migration-task)
+- [arnobase](https://github.com/arnobase/snapshot-squid)
+- [RicqCodes](https://github.com/RicqCodes/snapshot-subgraph-migration-submission)
+
 # Snapshot Subgraph migration 
 
 **Submissions for this quest are closed**
