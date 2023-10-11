@@ -28,7 +28,7 @@ This quest is to migrate the [Snapshot Subgraph](https://thegraph.com/hosted-ser
 
 | Category         | Skill Level                          | Time required (hours) | Max Participants | Reward                             | Status |
 | ---------------- | ------------------------------------ | --------------------- | ---------------- | ---------------------------------- | ------ |
-| Squid Deployment | $\textcolor{green}{\textsf{Intermediate}}$ | ~40                    | 5                | $\textcolor{red}{\textsf{2000tSQD}}$ | closed   |
+| Squid Deployment | $\textcolor{green}{\textsf{Intermediate}}$ | ~10                    | 5                | $\textcolor{red}{\textsf{1500tSQD}}$ | closed   |
 
 # Acceptance critera
 
